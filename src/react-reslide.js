@@ -1,6 +1,11 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const Fragment = ({ children }) => children
+
+Fragment.propTypes = {
+  children: PropTypes.node
+}
 
 export class Reslide extends React.Component {
   constructor(props) {
@@ -34,31 +39,17 @@ export class Reslide extends React.Component {
         ...this.state
       })
     })
-    return (
-      <div className={this.props.className ? this.props.className : 'reslide'}>
-        {children}
-      </div>
-    )
+    return <div className={this.props.className}>{children}</div>
   }
 }
 
-export const Slide = props => {
-  if (props.render && typeof props.render === 'function') {
-    return <Fragment>{props.render(props)}</Fragment>
-  }
-  const { children, isActive, preloadContent } = props
-  return preloadContent ? (
-    <div
-      className={props.className ? props.className : 'reslide__slide'}
-      style={{
-        display: isActive ? 'block' : 'none'
-      }}
-    >
-      {children}
-    </div>
-  ) : isActive ? (
-    <div>{children}</div>
-  ) : null
+Reslide.propTypes = {
+  children: PropTypes.node.isRequired,
+  preloadContent: PropTypes.bool
+}
+
+Reslide.defaultProps = {
+  className: 'reslide'
 }
 
 export class Slides extends React.Component {
@@ -78,63 +69,107 @@ export class Slides extends React.Component {
   }
 }
 
+Slides.propTypes = {
+  children: PropTypes.node.isRequired,
+  preloadContent: PropTypes.bool,
+  activeSlideIndex: PropTypes.number
+}
+
+export const Slide = props => {
+  console.log('slide', props)
+  if (props.render && typeof props.render === 'function') {
+    return <Fragment>{props.render(props)}</Fragment>
+  }
+  const { children, isActive, preloadContent } = props
+  return preloadContent ? (
+    <div
+      className={props.className}
+      style={{
+        display: isActive ? 'block' : 'none'
+      }}
+    >
+      {children}
+    </div>
+  ) : isActive ? (
+    <div>{children}</div>
+  ) : null
+}
+
+Slide.propTypes = {
+  children: PropTypes.node.isRequired,
+  isActive: PropTypes.bool,
+  preloadContent: PropTypes.bool,
+  render: PropTypes.func
+}
+
+Slide.defaultProps = {
+  className: 'reslide__slide'
+}
+
 export const Controls = props => {
   const { onActivateSlide, activeSlideIndex, numberOfSlides } = props
   const children = React.Children.map(props.children, (child, index) => {
     return React.cloneElement(child, {
-      prevSlide: () => {
-        onActivateSlide(activeSlideIndex - 1)
-      },
-      nextSlide: () => {
-        onActivateSlide(activeSlideIndex + 1)
+      slide: () => {
+        if (child.type === PrevButton) {
+          onActivateSlide(activeSlideIndex - 1)
+        }
+        if (child.type === NextButton) {
+          onActivateSlide(activeSlideIndex + 1)
+        }
       },
       isDisbaled:
         child.type === NextButton
           ? activeSlideIndex + 1 >= numberOfSlides
-          : activeSlideIndex - 1 < 0,
-      numberOfSlides,
-      currentSlide: activeSlideIndex
+          : activeSlideIndex - 1 < 0
     })
   })
-  return (
-    <div className={props.className ? props.className : 'reslide__controls'}>
-      {children}
-    </div>
-  )
+  return <div className={props.className}>{children}</div>
+}
+
+Controls.propTypes = {
+  children: PropTypes.node.isRequired,
+  activeSlideIndex: PropTypes.number,
+  numberOfSlides: PropTypes.number,
+  onActivateSlide: PropTypes.func
+}
+
+Controls.defaultProps = {
+  className: 'reslide__controls'
 }
 
 export const PrevButton = props => {
   if (props.render && typeof props.render === 'function') {
     return <Fragment>{props.render(props)}</Fragment>
   }
-  const { style, children, currentSlide, prevSlide, isDisbaled } = props
-  return (
-    <button
-      style={style}
-      disabled={isDisbaled}
-      onClick={!isDisbaled ? () => prevSlide() : null}
-    >
-      {children ? children : 'Prev'}
-    </button>
-  )
+  const { children, slide, isDisbaled } = props
+  return <span onClick={!isDisbaled ? () => slide() : null}>{children}</span>
+}
+
+PrevButton.propTypes = {
+  children: PropTypes.node,
+  isDisbaled: PropTypes.bool,
+  slide: PropTypes.func,
+  render: PropTypes.func
+}
+
+PrevButton.defaultProps = {
+  children: 'Prev'
 }
 
 export const NextButton = props => {
-  const {
-    style,
-    children,
-    currentSlide,
-    numberOfSlides,
-    nextSlide,
-    isDisbaled
-  } = props
-  return (
-    <button
-      style={style}
-      disabled={isDisbaled}
-      onClick={!isDisbaled ? () => nextSlide() : null}
-    >
-      {children ? children : 'Prev'}
-    </button>
-  )
+  console.log('next', props)
+  const { children, slide, isDisbaled } = props
+  return <span onClick={!isDisbaled ? () => slide() : null}>{children}</span>
+}
+
+NextButton.propTypes = {
+  children: PropTypes.node,
+  isDisbaled: PropTypes.bool,
+  slide: PropTypes.func,
+  render: PropTypes.func
+}
+
+NextButton.defaultProps = {
+  children: 'Next'
 }

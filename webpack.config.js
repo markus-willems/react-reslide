@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = env => {
   return {
-    entry: './index.js',
+    entry: './src/index.js',
     output: {
       path: path.resolve(__dirname, 'deploy'),
       filename: 'react-reslide.js'
@@ -19,7 +19,7 @@ module.exports = env => {
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: './index.html'
+        template: './src/index.html'
       })
     ]
   }

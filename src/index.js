@@ -8,11 +8,11 @@ import {
   Controls,
   PrevButton,
   NextButton
-} from './src/react-reslide'
+} from './react-reslide'
 
 const App = () => {
   return (
-    <Reslide className="reslide" preloadContent>
+    <Reslide>
       <Slides>
         <Slide>
           <img src="https://farm9.staticflickr.com/8666/15944458013_1a100cc8e0_z_d.jpg" />
@@ -44,7 +44,7 @@ const App = () => {
             return (
               <button
                 disabled={props.isDisbaled}
-                onClick={!props.isDisbaled ? () => props.prevSlide() : null}
+                onClick={!props.isDisbaled ? () => props.slide() : null}
               >
                 {props.children}
               </button>
