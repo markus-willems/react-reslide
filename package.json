@@ -1,6 +1,6 @@
 {
   "name": "react-reslide",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A react slider component",
   "main": "dist/react-reslide.js",
   "repository": "https://github.com/markus-willems/react-reslide.git",
